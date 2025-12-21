@@ -1,0 +1,314 @@
+.mr-hero{
+  padding: 26px 0 10px;
+}
+.mr-hero-grid{
+  display:grid;
+  gap:22px;
+  grid-template-columns: 1.05fr .95fr;
+  align-items: start;
+}
+.mr-kicker{
+  display:inline-flex;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid var(--mr-border);
+  background: rgba(246,196,0,.08);
+  color: var(--mr-text);
+  font-weight:900;
+  font-size:12px;
+  letter-spacing:.3px;
+  margin:0 0 12px;
+}
+.mr-hero-tagline{
+  margin: 2px 0 6px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .9px;
+  text-transform: uppercase;
+  color: var(--mr-yellow);
+}
+.mr-hero-cats{
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--mr-muted);
+}
+.mr-lead{font-size:16px; margin:0 0 16px;}
+.mr-hero-ctas{display:flex; gap:10px; flex-wrap:wrap; margin: 12px 0 14px;}
+.mr-badges{display:flex; gap:10px; flex-wrap:wrap;}
+.mr-badge{
+  padding:8px 10px;
+  border-radius:14px;
+  border:1px solid var(--mr-border);
+  background: rgba(255,255,255,.03);
+  font-weight:800;
+  font-size:12px;
+}
+
+.mr-hero-media{display:grid; gap:12px;}
+.mr-hero-photo{
+  border-radius:22px;
+  overflow:hidden;
+  border:1px solid var(--mr-border);
+  box-shadow: var(--mr-shadow);
+  background: rgba(255,255,255,.02);
+}
+
+.mr-hero-photo{
+  height: clamp(320px, 55vh, 640px);
+}
+.mr-hero-photo img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center 30%;
+}
+
+.mr-hero-photo-secondary{
+  opacity:.92;
+}
+.mr-hero-img{display:block; width:100%; height:auto;}
+
+.mr-worklist{display:grid; gap:14px;}
+.mr-work-card{
+  border-radius:22px;
+  border:1px solid var(--mr-border);
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+  padding:16px;
+}
+
+/* Generic panel (same visual language as work cards) */
+.mr-panel{
+  border-radius:22px;
+  border:1px solid var(--mr-border);
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+  padding:18px;
+}
+.mr-panel-head{margin-bottom:6px;}
+.mr-panel-head .mr-h2{margin:0 0 6px;}
+
+/* Secciones: acento visual para títulos (línea amarilla en degradé) */
+.mr-h2-accent{position:relative; display:inline-block; padding-bottom:6px; font-weight:650; letter-spacing:-0.02em;}
+.mr-h2-accent::after{content:""; position:absolute; left:0; bottom:0; width:56px; height:3px; border-radius:999px; background:linear-gradient(90deg, var(--mr-yellow), rgba(246,196,0,.10)); box-shadow:0 0 18px rgba(246,196,0,.25);} 
+
+
+/* Contacto: título más fino y con acento (sin perder presencia) */
+.mr-h2-contact{font-weight:650; letter-spacing:-0.02em;}
+.mr-contact-panel .mr-h2-contact{position:relative; display:inline-block; padding-bottom:6px;}
+.mr-contact-panel .mr-h2-contact::after{content:""; position:absolute; left:0; bottom:0; width:56px; height:3px; border-radius:999px; background:linear-gradient(90deg, var(--mr-yellow), rgba(246,196,0,.10)); box-shadow:0 0 18px rgba(246,196,0,.25);} 
+
+.mr-work-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:12px;
+}
+.mr-thumbs{
+  display:grid;
+  gap:10px;
+  grid-template-columns: repeat(6, minmax(0,1fr));
+}
+.mr-process{
+  display:grid;
+  gap:16px;
+  /* Slightly favor text so the collage doesn't feel oversized */
+  grid-template-columns: 1fr .92fr;
+  /* IMPORTANT: don't stretch items, otherwise the collage can force the row height,
+     and the text column will stretch too (making JS measurements useless). */
+  align-items:start;
+
+  --mr-process-h: auto;
+}
+
+.mr-process-text{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-self:start;
+}
+
+.mr-process-media{
+  height: var(--mr-process-h);
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  /* No top/bottom padding: we want pixel-perfect height matching with the text column */
+  padding: 0;
+  align-self:start;
+}
+
+.mr-process-collage{
+  display:block;
+  width:100%;
+  height: 100%;
+  border-radius:18px;
+  overflow:hidden;
+  /* Keep the collage inside the main panel; no extra frame/border here */
+  border:0;
+  box-shadow:none;
+  background: transparent;
+}
+
+.mr-process-collage:focus-visible{
+  outline: 2px solid rgba(241,196,15,.85);
+  outline-offset: 4px;
+}
+
+.mr-process-img{
+  display:block;
+  width:100%;
+  height:100%;
+  /* Force exact height/width even if it distorts a bit (requested) */
+  object-fit:fill;
+  object-position:center;
+  background: transparent;
+}
+
+.mr-step{
+  display:flex;
+  gap:12px;
+  padding:10px;
+  border-radius:18px;
+  border:1px solid var(--mr-border);
+  background: rgba(255,255,255,.02);
+  margin:0;
+}
+.mr-step-num{
+  width:32px;
+  height:32px;
+  border-radius:11px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  background: rgba(246,196,0,.18);
+  border:1px solid rgba(246,196,0,.25);
+}
+.mr-contact{
+  display:grid;
+  gap:14px;
+  grid-template-columns: 1fr 1fr;
+}
+.mr-contact-card{
+  padding:18px;
+  border-radius:22px;
+  border:1px solid var(--mr-border);
+  background: rgba(255,255,255,.02);
+}
+.mr-contact-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+.mr-contact-lines{display:grid; gap:10px; margin-top:12px;}
+.mr-line{display:grid; grid-template-columns: 112px 1fr; align-items:baseline; gap:14px;}
+.mr-line-k{color:var(--mr-muted); font-weight:800;}
+.mr-line-v{font-weight:800; justify-self:start; text-align:left;}
+
+.mr-contact-lines .mr-link{border-bottom-color: transparent;}
+.mr-contact-lines .mr-link:hover{border-bottom-color: var(--mr-yellow);}
+.mr-social{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+
+@media (max-width: 980px){
+  .mr-hero-grid{grid-template-columns: 1fr;}
+  .mr-thumbs{grid-template-columns: repeat(3, minmax(0,1fr));}
+  .mr-process{grid-template-columns: 1fr;}
+  .mr-process-media{min-height: 280px;}
+}
+@media (max-width: 520px){
+  .mr-contact{grid-template-columns: 1fr;}
+  .mr-line{grid-template-columns: 1fr; gap:6px;}
+  .mr-line-v{font-weight:800;}
+}
+
+/* Theme badge (dev helper) */
+.mr-theme-badge{margin-left:12px;align-self:center;display:inline-flex;padding:6px 10px;border-radius:999px;border:1px solid var(--mr-border);background:rgba(255,255,255,.03);color:var(--mr-muted);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;}
+
+
+/* === Theme: BRAND (bold, high-contrast) === */
+.mr-body.mr-theme-brand{
+  --mr-bg:#070707;
+  --mr-panel:#0f1011;
+  --mr-panel2:#14161b;
+  --mr-border:rgba(246,196,0,.18);
+  --mr-shadow: 0 14px 42px rgba(0,0,0,.45);
+  background:
+    radial-gradient(900px 520px at 18% -10%, rgba(246,196,0,.14), transparent 60%),
+    radial-gradient(700px 520px at 90% 10%, rgba(246,196,0,.08), transparent 55%),
+    var(--mr-bg);
+}
+.mr-theme-brand .mr-btn-primary,
+.mr-theme-brand .mr-nav .mr-btn-primary{
+  box-shadow: 0 18px 55px rgba(246,196,0,.22), 0 10px 28px rgba(0,0,0,.45);
+}
+.mr-theme-brand .mr-kicker{background: rgba(246,196,0,.12); border-color: rgba(246,196,0,.26);}
+.mr-theme-brand .mr-theme-badge{background: rgba(246,196,0,.10); border-color: rgba(246,196,0,.26); color: rgba(246,196,0,.95);}
+
+
+/* === Theme: BRAND GRID (brand punch + industrial grid) === */
+.mr-body.mr-theme-brandgrid{
+  --mr-bg:#070707;
+  --mr-panel:#0f1011;
+  --mr-panel2:#14161b;
+  --mr-border:rgba(246,196,0,.18);
+  --mr-shadow: 0 14px 42px rgba(0,0,0,.45);
+  background:
+    radial-gradient(900px 520px at 18% -10%, rgba(246,196,0,.14), transparent 60%),
+    radial-gradient(700px 520px at 90% 10%, rgba(246,196,0,.08), transparent 55%),
+    linear-gradient(0deg, rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    var(--mr-bg);
+  background-size: auto, auto, 48px 48px, 48px 48px, auto;
+}
+.mr-theme-brandgrid .mr-btn-primary,
+.mr-theme-brandgrid .mr-nav .mr-btn-primary{
+  box-shadow: 0 18px 55px rgba(246,196,0,.22), 0 10px 28px rgba(0,0,0,.45);
+}
+.mr-theme-brandgrid .mr-kicker{background: rgba(246,196,0,.12); border-color: rgba(246,196,0,.26);}
+.mr-theme-brandgrid .mr-theme-badge{background: rgba(246,196,0,.10); border-color: rgba(246,196,0,.26); color: rgba(246,196,0,.95);}
+
+
+/* === Scroll-to-top button === */
+.mr-scrolltop{
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid rgba(246,196,0,.22);
+  background: rgba(10,10,10,.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity .22s ease, transform .22s ease, border-color .22s ease, background-color .22s ease, box-shadow .22s ease;
+  z-index: 60;
+}
+.mr-scrolltop svg{
+  width: 20px;
+  height: 20px;
+  fill: rgba(255,255,255,.92);
+}
+.mr-scrolltop.is-visible{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.mr-scrolltop:hover{
+  background: rgba(15,15,15,.86);
+  border-color: rgba(246,196,0,.45);
+  box-shadow: 0 16px 38px rgba(0,0,0,.45), 0 10px 18px rgba(246,196,0,.12);
+}
+.mr-scrolltop:active{transform: translateY(1px);}
+.mr-scrolltop:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(246,196,0,.18), 0 16px 38px rgba(0,0,0,.45);
+}
+@media (max-width: 520px){
+  .mr-scrolltop{right: 14px; bottom: 14px; width: 46px; height: 46px;}
+}
+@media (prefers-reduced-motion: reduce){
+  .mr-scrolltop{transition: none;}
+}
