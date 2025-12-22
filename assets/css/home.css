@@ -106,15 +106,45 @@
 }
 .mr-thumbs{
   display:grid;
-  gap:10px;
-  grid-template-columns: repeat(6, minmax(0,1fr));
+  gap:12px;
+
+  /* Desktop: fixed-size tiles (no “estirado” cuando hay pocas fotos) */
+  grid-template-columns: repeat(auto-fill, 92px);
+  grid-auto-rows: 92px;
+  justify-content: start;
+  align-content: start;
 }
 
 .mr-thumb{
+  position:relative;
   border-radius:16px;
   overflow:hidden;
   background: rgba(255,255,255,.03);
   box-shadow: 0 0 0 1px rgba(255,204,0,.12) inset;
+  transform: translateZ(0);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+.mr-thumb::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(80% 80% at 50% 20%, rgba(246,196,0,.10), transparent 55%),
+              linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.28));
+  opacity:.0;
+  transition: opacity .18s ease;
+  pointer-events:none;
+}
+
+.mr-thumb:hover{
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 0 1px rgba(255,204,0,.22) inset, 0 16px 36px rgba(0,0,0,.45);
+}
+.mr-thumb:hover::after{ opacity:1; }
+
+.mr-thumb:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(246,196,0,.18), 0 16px 36px rgba(0,0,0,.45);
 }
 
 .mr-thumb img{
