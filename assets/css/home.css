@@ -211,6 +211,7 @@
   border:1px solid var(--mr-border);
   background: rgba(255,255,255,.02);
 }
+.mr-contact-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
 .mr-contact-lines{display:grid; gap:10px; margin-top:12px;}
 .mr-line{display:grid; grid-template-columns: 112px 1fr; align-items:baseline; gap:14px;}
 .mr-line-k{color:var(--mr-muted); font-weight:800;}
@@ -218,6 +219,7 @@
 
 .mr-contact-lines .mr-link{border-bottom-color: transparent;}
 .mr-contact-lines .mr-link:hover{border-bottom-color: var(--mr-yellow);}
+.mr-social{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
 
 /* --- Contact: CTA buttons + socials (desktop + responsive) --- */
 .mr-contact-actions,
@@ -227,7 +229,6 @@
   flex-wrap:wrap;
   align-items:center;
   margin-top:12px;
-  font-size:14px;
 }
 
 /* Make WhatsApp/Mail match Instagram/Facebook sizing (no heavy shadows here) */
@@ -237,10 +238,6 @@
   border-radius:14px;
   box-shadow:none;
   font-weight:800;
-  line-height:1;
-  white-space:nowrap;
-  width:auto;
-  flex:0 0 auto;
 }
 .mr-contact-actions .mr-btn-primary{
   box-shadow:none;
@@ -251,8 +248,7 @@
 
 /* Icons inside buttons */
 .mr-wa-ico,
-.mr-mail-ico,
-.mr-social-ico{
+.mr-mail-ico{
   width:18px;
   height:18px;
   display:inline-flex;
@@ -260,8 +256,7 @@
   justify-content:center;
 }
 .mr-wa-ico svg,
-.mr-mail-ico svg,
-.mr-social-ico svg{
+.mr-mail-ico svg{
   width:18px;
   height:18px;
   display:block;
@@ -280,23 +275,12 @@
     width:100%;
     min-width:0;
     justify-content:center;
-    /* Prevent label overflow from invading the adjacent column (overlap bug) */
-    overflow:hidden;
   }
   .mr-social-text{
     min-width:0;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-  }
-
-  /* Same truncation behavior for contact labels */
-  .mr-wa-text,
-  .mr-mail-text{
-    min-width:0;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
   }
 }
 @media (max-width: 420px){
@@ -529,4 +513,147 @@
 
 @media (max-width: 420px){
   .mr-work-card .mr-thumbs.mr-carousel .mr-thumb{ width: 82%; }
+}
+
+
+
+
+
+
+/* Social buttons: cleaner (no "pisadas" de sombras) */
+.mr-social{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-top:12px;
+}
+.mr-social .mr-btn{
+  box-shadow:none;
+  border-radius:14px;
+  padding:10px 12px;
+}
+.mr-social .mr-btn:hover{
+  transform: translateY(-1px);
+}
+
+/* Mobile: grid 2 columnas, sin desbordes ni overlap */
+@media (max-width: 720px){
+  .mr-contact-actions{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:10px;
+  }
+  .mr-contact-actions .mr-btn{
+    width:100%;
+    justify-content:center;
+    min-width:0;
+  }
+
+  .mr-social{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:10px;
+  }
+  .mr-social .mr-btn{
+    width:100%;
+    min-width:0;
+    justify-content:center;
+    border-radius:16px;
+  }
+  .mr-social-text{
+    min-width:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+}
+
+@media (max-width: 420px){
+  .mr-contact-actions{
+    grid-template-columns: 1fr;
+  }
+  /* En ultra chico: icon-only social, 2 columnas prolijas */
+  .mr-social{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mr-social-text{
+    display:none;
+  }
+}
+
+
+/* --- Social icons --- */
+.mr-social-ico{
+  width:18px;
+  height:18px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.mr-social-ico svg{
+  width:18px;
+  height:18px;
+  display:block;
+}
+.mr-social .mr-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+/* Mobile: icon-first, cleaner */
+@media (max-width: 720px){
+  .mr-social{
+    grid-template-columns: 1fr 1fr;
+  }
+  .mr-social .mr-btn{
+    padding:10px 12px;
+    border-radius:999px;
+  }
+}
+@media (max-width: 420px){
+  .mr-social{
+    grid-template-columns: 1fr 1fr;
+  }
+  .mr-social-text{
+    display:none;
+  }
+  .mr-social .mr-btn{
+    min-height:44px;
+  }
+}
+
+
+
+
+/* === Contact mobile overflow fix (prevents button overlap) === */
+@media (max-width: 720px){
+  #contacto .mr-contact-actions,
+  #contacto .mr-social{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:10px;
+    align-items:stretch;
+  }
+
+  #contacto .mr-contact-actions .mr-btn,
+  #contacto .mr-social .mr-btn{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box;
+    overflow:hidden;
+    justify-content:center;
+  }
+
+  #contacto .mr-wa-text,
+  #contacto .mr-mail-text,
+  #contacto .mr-social-text{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
 }
