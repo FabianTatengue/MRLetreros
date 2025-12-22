@@ -657,3 +657,9 @@
     white-space:nowrap;
   }
 }
+
+/* Samsung/Android small widths: keep social labels visible (avoid icon-only under 420px) */
+@media (max-width: 420px){
+  #contacto .mr-social-text{ display:inline; }
+  #contacto .mr-social .mr-btn{ font-size:13px; padding:10px 10px; gap:8px; }
+}
