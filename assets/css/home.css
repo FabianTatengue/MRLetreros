@@ -333,12 +333,14 @@
 
 /* Mobile carousel for thumbnails (shows “there are more”) */
 @media (max-width: 420px){
-  .mr-thumb{ width: 78%; }
+  .mr-thumb{ width: 86%; }
 }
 
 
 /* --- Works thumbs: mobile carousel + arrows (final) --- */
 @media (max-width: 720px){
+  .mr-work-card{ overflow:hidden; }
+
   /* keep header layout nice */
   .mr-work-head{
     flex-direction:column;
@@ -359,16 +361,22 @@
   .mr-carousel-wrap{
     position:relative;
   }
+  .mr-carousel-wrap{ max-width:100%; overflow:hidden; }
 
   /* REAL horizontal carousel */
   .mr-work-card .mr-thumbs.mr-carousel{
+    box-sizing:border-box;
+    width:100%;
+    max-width:100%;
     display:flex !important;
     flex-direction:row !important;
     flex-wrap: nowrap !important;
     gap:12px;
     overflow-x:auto;
     overflow-y:hidden;
-    padding: 8px 44px 12px; /* space for arrows */
+    padding: 8px 12px 12px;
+    scroll-padding-left: 12px;
+    box-sizing: border-box; /* space for arrows */
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
@@ -387,7 +395,7 @@
 
   .mr-work-card .mr-thumbs.mr-carousel .mr-thumb{
     flex: 0 0 auto;
-    width: 78%;
+    width: 86%;
     max-width: 260px;
     aspect-ratio: 4 / 3;
     scroll-snap-align: start;
@@ -402,7 +410,7 @@
 
   /* fade hint */
   .mr-work-card .mr-thumbs.mr-carousel{
-    mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 7%, rgba(0,0,0,1) 93%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 88%, rgba(0,0,0,0) 100%);
   }
 
   /* arrows */
@@ -430,8 +438,8 @@
   .mr-carousel-btn:active{ transform: translateY(-50%) scale(.98); }
   .mr-carousel-btn[disabled]{ opacity:.25; cursor:default; pointer-events:none; }
 
-  .mr-carousel-btn--prev{ left: 8px; }
-  .mr-carousel-btn--next{ right: 8px; }
+  .mr-carousel-btn--prev{ left: 6px; }
+  .mr-carousel-btn--next{ right: 6px; }
 }
 
 @media (max-width: 420px){
