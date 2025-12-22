@@ -155,3 +155,98 @@
     document.fonts.ready.then(syncProcessHeight).catch(function(){});
   }
 })();
+
+
+// --- Works thumbs: mobile carousel + arrows (final) ---
+(function(){
+  function isMobile(){ return window.matchMedia && window.matchMedia("(max-width: 720px)").matches; }
+
+  function wrapThumbs(thumbs){
+    if (!thumbs) return null;
+    // add carousel class
+    thumbs.classList.add("mr-carousel");
+    // ensure wrapper exists for overlay arrows
+    const existingWrap = thumbs.closest(".mr-carousel-wrap");
+    if (existingWrap) return existingWrap;
+
+    const wrap = document.createElement("div");
+    wrap.className = "mr-carousel-wrap";
+    thumbs.parentNode.insertBefore(wrap, thumbs);
+    wrap.appendChild(thumbs);
+    return wrap;
+  }
+
+  function ensureButtons(wrap){
+    if (!wrap) return;
+    if (wrap.querySelector(".mr-carousel-btn")) return;
+
+    const prev = document.createElement("button");
+    prev.type = "button";
+    prev.className = "mr-carousel-btn mr-carousel-btn--prev";
+    prev.setAttribute("aria-label", "Anterior");
+    prev.innerHTML = "‹";
+
+    const next = document.createElement("button");
+    next.type = "button";
+    next.className = "mr-carousel-btn mr-carousel-btn--next";
+    next.setAttribute("aria-label", "Siguiente");
+    next.innerHTML = "›";
+
+    wrap.appendChild(prev);
+    wrap.appendChild(next);
+  }
+
+  function bind(wrap){
+    const thumbs = wrap.querySelector(".mr-thumbs");
+    const prev = wrap.querySelector(".mr-carousel-btn--prev");
+    const next = wrap.querySelector(".mr-carousel-btn--next");
+    if (!thumbs || !prev || !next) return;
+
+    const step = () => Math.max(thumbs.clientWidth * 0.85, 240);
+
+    function update(){
+      const max = thumbs.scrollWidth - thumbs.clientWidth - 1;
+      prev.disabled = thumbs.scrollLeft <= 1;
+      next.disabled = thumbs.scrollLeft >= max;
+      const hasOverflow = thumbs.scrollWidth > thumbs.clientWidth + 8;
+      const show = isMobile() && hasOverflow;
+      prev.style.display = next.style.display = show ? "" : "none";
+    }
+
+    if (wrap.dataset.carouselBound === "1") { update(); return; }
+    wrap.dataset.carouselBound = "1";
+
+    prev.addEventListener("click", () => thumbs.scrollBy({ left: -step(), behavior: "smooth" }));
+    next.addEventListener("click", () => thumbs.scrollBy({ left: step(), behavior: "smooth" }));
+
+    thumbs.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    setTimeout(update, 0);
+  }
+
+  function teardown(thumbs){
+    if (!thumbs) return;
+    thumbs.classList.remove("mr-carousel");
+    const wrap = thumbs.closest(".mr-carousel-wrap");
+    if (!wrap) return;
+    // move thumbs out and remove wrapper/buttons
+    wrap.parentNode.insertBefore(thumbs, wrap);
+    wrap.remove();
+  }
+
+  function init(){
+    document.querySelectorAll(".mr-work-card .mr-thumbs").forEach(thumbs => {
+      if (isMobile()){
+        const wrap = wrapThumbs(thumbs);
+        ensureButtons(wrap);
+        bind(wrap);
+      } else {
+        teardown(thumbs);
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+  window.addEventListener("resize", init);
+})();
+
