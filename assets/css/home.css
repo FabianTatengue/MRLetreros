@@ -446,3 +446,76 @@
   .mr-work-card .mr-thumbs.mr-carousel .mr-thumb{ width: 82%; }
 }
 
+
+/* --- Responsive: Contacto (mobile polish) --- */
+@media (max-width: 820px){
+  .mr-contact{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px){
+  .mr-contact-card{
+    padding:16px;
+  }
+
+  .mr-contact-lines{
+    gap:10px;
+  }
+
+  /* each line becomes a mini-card for clarity */
+  .mr-line{
+    grid-template-columns: 1fr;
+    gap:6px;
+    padding:10px 12px;
+    border-radius:16px;
+    border:1px solid rgba(255,204,0,.12);
+    background: rgba(255,255,255,.03);
+  }
+
+  .mr-line-k{
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color: rgba(255,255,255,.68);
+  }
+
+  .mr-line-v{
+    font-size:15px;
+    line-height:1.25;
+    font-weight:800;
+    word-break: break-word;
+  }
+
+  .mr-contact-actions{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+  }
+
+  .mr-contact-actions .mr-btn{
+    width:100%;
+    justify-content:center;
+  }
+
+  .mr-social{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+  }
+
+  .mr-social .mr-btn{
+    width:100%;
+    justify-content:center;
+  }
+}
+
+@media (max-width: 420px){
+  .mr-contact-actions{
+    grid-template-columns: 1fr;
+  }
+  .mr-social{
+    grid-template-columns: 1fr;
+  }
+}
+
