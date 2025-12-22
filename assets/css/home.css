@@ -660,6 +660,13 @@
 
 /* Samsung/Android small widths: keep social labels visible (avoid icon-only under 420px) */
 @media (max-width: 420px){
+  /* Ultra-small: keep WhatsApp/Mail side-by-side (like IG/FB) without truncation */
+  #contacto .mr-contact-actions{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #contacto .mr-contact-actions .mr-btn{ font-size:13px; padding:10px 10px; gap:8px; }
+  /* Keep social labels visible on Samsung/Android */
   #contacto .mr-social-text{ display:inline; }
   #contacto .mr-social .mr-btn{ font-size:13px; padding:10px 10px; gap:8px; }
+  /* Prefer showing full short labels instead of ellipsis for these two */
+  #contacto .mr-wa-text,
+  #contacto .mr-mail-text{ text-overflow:clip; }
 }

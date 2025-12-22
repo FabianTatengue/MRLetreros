@@ -35,6 +35,31 @@
 .mr-h2{font-size: clamp(24px, 2.6vw, 32px); margin:0;}
 .mr-h3{font-size:18px; margin:0 0 6px;}
 
+
+
+/* --- Section title underline (brand yellow gradient) --- */
+.mr-panel-head .mr-h2{
+  position:relative;
+  display:inline-block;
+  padding-bottom:10px;
+}
+.mr-panel-head .mr-h2::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:2px;
+  width:72px;
+  height:3px;
+  border-radius:999px;
+  background: linear-gradient(90deg, var(--mr-yellow), rgba(246,196,0,.10));
+  box-shadow: 0 0 18px rgba(246,196,0,.25);
+  pointer-events:none;
+}
+@media (max-width: 520px){
+  .mr-panel-head .mr-h2{ padding-bottom:9px; }
+  .mr-panel-head .mr-h2::after{ width:62px; }
+}
+
 .mr-section{padding:56px 0;  scroll-margin-top: 96px;
 }
 .mr-section-head{margin-bottom:18px;}

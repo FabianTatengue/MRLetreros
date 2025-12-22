@@ -295,10 +295,10 @@
   .mr-nav{
     position:absolute;
     top:64px;
-    right:16px;
+    right:12px;
     left:auto;
-    width:320px;
-    max-width: calc(100vw - 32px);
+    width:280px;
+    max-width: calc(100vw - 24px);
     max-height: calc(100vh - 92px);
     overflow:auto;
 
@@ -314,7 +314,7 @@
     box-shadow: var(--mr-shadow);
 
     opacity:0;
-    transform: translateX(16px);
+    transform: translateX(12px);
     pointer-events:none;
     transition: transform .18s ease, opacity .18s ease;
   }
@@ -326,6 +326,15 @@
 
   .mr-grid-3{grid-template-columns: 1fr;}
   .mr-footer-inner{flex-direction:column;}
+}
+
+/* Extra-small phones: keep the drawer tight to the right and not too wide */
+@media (max-width: 420px){
+  .mr-nav{
+    right:10px;
+    width:250px;
+    max-width: calc(100vw - 20px);
+  }
 }
 
 /* --- Works thumbs (uniform, no stretch) --- */
