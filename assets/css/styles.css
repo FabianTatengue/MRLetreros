@@ -35,5 +35,6 @@
 .mr-h2{font-size: clamp(24px, 2.6vw, 32px); margin:0;}
 .mr-h3{font-size:18px; margin:0 0 6px;}
 
-.mr-section{padding:56px 0;}
+.mr-section{padding:56px 0;  scroll-margin-top: 96px;
+}
 .mr-section-head{margin-bottom:18px;}

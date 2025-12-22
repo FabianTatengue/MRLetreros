@@ -190,6 +190,7 @@
   border-radius:18px;
   border:1px solid var(--mr-border);
   box-shadow: var(--mr-shadow);
+  transition: opacity .22s ease, transform .22s ease;
 }
 .mr-lightbox-close{
   position:absolute;
@@ -203,6 +204,11 @@
   color:var(--mr-text);
   font-size:26px;
   cursor:pointer;
+}
+
+.mr-lightbox-img.is-switching{
+  opacity:0;
+  transform: translateX(var(--mr-lb-shift, 0px)) scale(.985);
 }
 .mr-lightbox-nav{
   position:absolute;

@@ -44,11 +44,59 @@
   let images = [];
   let index = 0;
   let caption = "";
+  let isAnimating = false;
 
-  const set = () => {
+  const prev = () => {
+    if (!images.length) return;
+    index = (index - 1 + images.length) % images.length;
+    set(-1);
+  };
+
+  const next = () => {
+    if (!images.length) return;
+    index = (index + 1) % images.length;
+    set(1);
+  };
+
+  const set = (dir = 0) => {
     if (!lbImg) return;
-    lbImg.src = images[index] || "";
-    lbImg.alt = caption ? `${caption} (${index + 1}/${images.length})` : `Imagen ${index + 1} de ${images.length}`;
+
+    // Dir 0: set instant (open / resize / first paint)
+    if (!dir) {
+      lbImg.classList.remove("is-switching");
+      lbImg.style.removeProperty("--mr-lb-shift");
+      lbImg.src = images[index] || "";
+      lbImg.alt = caption
+        ? `${caption} (${index + 1}/${images.length})`
+        : `Imagen ${index + 1} de ${images.length}`;
+      isAnimating = false;
+      return;
+    }
+
+    // animate: fade/slide out -> swap -> fade/slide in
+    if (isAnimating) return;
+    isAnimating = true;
+
+    const shift = 18;
+    lbImg.style.setProperty("--mr-lb-shift", `${dir * shift}px`);
+    lbImg.classList.add("is-switching");
+
+    window.setTimeout(() => {
+      lbImg.src = images[index] || "";
+      lbImg.alt = caption
+        ? `${caption} (${index + 1}/${images.length})`
+        : `Imagen ${index + 1} de ${images.length}`;
+
+      // enter from opposite side
+      lbImg.style.setProperty("--mr-lb-shift", `${-dir * shift}px`);
+      requestAnimationFrame(() => {
+        lbImg.classList.remove("is-switching");
+      });
+
+      window.setTimeout(() => {
+        isAnimating = false;
+      }, 230);
+    }, 140);
   };
 
   const open = (imgs, i, cap) => {
@@ -60,7 +108,7 @@
     lb.setAttribute("aria-hidden", "false");
     document.documentElement.classList.add("mr-lock-scroll");
     document.body.classList.add("mr-lock-scroll");
-    set();
+    set(0);
   };
 
   const close = () => {
@@ -68,18 +116,6 @@
     lb.setAttribute("aria-hidden", "true");
     document.documentElement.classList.remove("mr-lock-scroll");
     document.body.classList.remove("mr-lock-scroll");
-  };
-
-  const prev = () => {
-    if (!images.length) return;
-    index = (index - 1 + images.length) % images.length;
-    set();
-  };
-
-  const next = () => {
-    if (!images.length) return;
-    index = (index + 1) % images.length;
-    set();
   };
 
   // Bind cards
