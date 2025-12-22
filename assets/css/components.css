@@ -251,3 +251,26 @@
   .mr-grid-3{grid-template-columns: 1fr;}
   .mr-footer-inner{flex-direction:column;}
 }
+
+/* --- Works thumbs (uniform, no stretch) --- */
+.mr-thumbs{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.mr-thumb{
+  width:112px;
+  height:112px;
+  flex:0 0 auto;
+  border-radius:16px;
+  overflow:hidden;
+}
+.mr-thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+@media (max-width: 520px){
+  .mr-thumb{width:96px; height:96px;}
+}
