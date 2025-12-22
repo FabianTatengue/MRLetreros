@@ -26,16 +26,51 @@
 
   var currentGroup = null;
   var currentIndex = -1;
+  var counterEl = null;
+
+  function ensureCounter(){
+    if(!lightbox) return;
+    counterEl = lightbox.querySelector('.mr-lightbox-counter');
+    if(counterEl) return;
+    counterEl = document.createElement('div');
+    counterEl.className = 'mr-lightbox-counter';
+    counterEl.setAttribute('aria-live','polite');
+    lightbox.appendChild(counterEl);
+  }
+
+  function getGroupLinks(group){
+    return links.filter(function(a){ return a.getAttribute('data-group') === group; });
+  }
+
+  function updateUI(total){
+    ensureCounter();
+    var hasMulti = total > 1;
+    if(btnPrev) btnPrev.style.display = hasMulti ? '' : 'none';
+    if(btnNext) btnNext.style.display = hasMulti ? '' : 'none';
+    if(counterEl) counterEl.style.display = hasMulti ? '' : 'none';
+    if(hasMulti && counterEl){
+      counterEl.textContent = (currentIndex + 1) + ' / ' + total;
+    }
+  }
 
   function openLightbox(group, idx){
     currentGroup = group;
     currentIndex = idx;
-    var groupLinks = links.filter(function(a){ return a.getAttribute('data-group') === group; });
+    var groupLinks = getGroupLinks(group);
     var href = groupLinks[idx] ? groupLinks[idx].getAttribute('href') : null;
     var alt = groupLinks[idx] ? (groupLinks[idx].querySelector('img') ? groupLinks[idx].querySelector('img').getAttribute('alt') : '') : '';
     if(!href) return;
+
+    // reset any drag leftover
+    if(lbImg){
+      lbImg.classList.remove('is-dragging');
+      lbImg.style.setProperty('--mr-lb-drag','0px');
+    }
+
     lbImg.src = href;
     lbImg.alt = alt || '';
+    updateUI(groupLinks.length);
+
     lightbox.classList.add('is-open');
     lightbox.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
@@ -45,16 +80,138 @@
     lightbox.classList.remove('is-open');
     lightbox.setAttribute('aria-hidden','true');
     lbImg.src = '';
+    if(lbImg){
+      lbImg.classList.remove('is-dragging');
+      lbImg.style.setProperty('--mr-lb-drag','0px');
+    }
     document.body.style.overflow = '';
   }
 
   function move(delta){
     if(!currentGroup) return;
-    var groupLinks = links.filter(function(a){ return a.getAttribute('data-group') === currentGroup; });
+    var groupLinks = getGroupLinks(currentGroup);
     if(!groupLinks.length) return;
     currentIndex = (currentIndex + delta + groupLinks.length) % groupLinks.length;
     openLightbox(currentGroup, currentIndex);
   }
+
+  // Swipe / drag to navigate (mobile + desktop)
+  (function(){
+    if(!lbImg || !lightbox) return;
+    // Prevent native image dragging (desktop) which can swallow pointer/touch gestures
+    lbImg.setAttribute('draggable','false');
+    var startX = 0;
+    var startY = 0;
+    var pointerId = null;
+    var dragging = false;
+
+    function canSwipe(){
+      if(!lightbox.classList.contains('is-open')) return false;
+      if(!currentGroup) return false;
+      return getGroupLinks(currentGroup).length > 1;
+    }
+
+    function isInteractiveTarget(el){
+      if(!el || !el.closest) return false;
+      return !!el.closest('button');
+    }
+
+    // Pointer events (Chrome/Edge/Firefox + most modern mobile browsers)
+    lightbox.addEventListener('pointerdown', function(e){
+      if(!canSwipe()) return;
+      if(isInteractiveTarget(e.target)) return;
+      // only primary button for mouse
+      if(typeof e.button === 'number' && e.button !== 0) return;
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      dragging = true;
+      lbImg.classList.add('is-dragging');
+      try{ lightbox.setPointerCapture(pointerId); } catch(_){ }
+    });
+
+    lightbox.addEventListener('pointermove', function(e){
+      if(!dragging || e.pointerId !== pointerId) return;
+      var dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+      if(Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+      if(Math.abs(dx) > Math.abs(dy)){
+        e.preventDefault();
+        lbImg.style.setProperty('--mr-lb-drag', dx + 'px');
+      }
+    }, { passive: false });
+
+    function end(e){
+      if(!dragging || e.pointerId !== pointerId) return;
+      var dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+      dragging = false;
+      pointerId = null;
+      lbImg.classList.remove('is-dragging');
+      lbImg.style.setProperty('--mr-lb-drag','0px');
+
+      // Swipe threshold
+      if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)){
+        if(dx < 0) move(1);
+        else move(-1);
+      }
+    }
+
+    lightbox.addEventListener('pointerup', end);
+    lightbox.addEventListener('pointercancel', end);
+
+    // Touch fallback (in case pointer events are flaky on some devices)
+    var tDragging = false;
+    var tStartX = 0;
+    var tStartY = 0;
+
+    lightbox.addEventListener('touchstart', function(e){
+      if(!canSwipe()) return;
+      if(isInteractiveTarget(e.target)) return;
+      if(!e.touches || !e.touches[0]) return;
+      tDragging = true;
+      tStartX = e.touches[0].clientX;
+      tStartY = e.touches[0].clientY;
+      lbImg.classList.add('is-dragging');
+    }, { passive: false });
+
+    lightbox.addEventListener('touchmove', function(e){
+      if(!tDragging) return;
+      if(!e.touches || !e.touches[0]) return;
+      var dx = e.touches[0].clientX - tStartX;
+      var dy = e.touches[0].clientY - tStartY;
+      if(Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+      if(Math.abs(dx) > Math.abs(dy)){
+        e.preventDefault();
+        lbImg.style.setProperty('--mr-lb-drag', dx + 'px');
+      }
+    }, { passive: false });
+
+    lightbox.addEventListener('touchend', function(e){
+      if(!tDragging) return;
+      tDragging = false;
+      lbImg.classList.remove('is-dragging');
+
+      var t = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : null;
+      var endX = t ? t.clientX : tStartX;
+      var endY = t ? t.clientY : tStartY;
+      var dx = endX - tStartX;
+      var dy = endY - tStartY;
+      lbImg.style.setProperty('--mr-lb-drag','0px');
+
+      if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)){
+        if(dx < 0) move(1);
+        else move(-1);
+      }
+    }, { passive: true });
+
+    lightbox.addEventListener('touchcancel', function(){
+      if(!tDragging) return;
+      tDragging = false;
+      lbImg.classList.remove('is-dragging');
+      lbImg.style.setProperty('--mr-lb-drag','0px');
+    }, { passive: true });
+  })();
 
   links.forEach(function(a){
     a.addEventListener('click', function(e){

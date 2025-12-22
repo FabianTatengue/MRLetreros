@@ -191,7 +191,14 @@
   border-radius:18px;
   border:1px solid var(--mr-border);
   box-shadow: var(--mr-shadow);
+  /* Drag/swipe support: JS moves this var while the user drags */
+  transform: translateX(var(--mr-lb-drag, 0px));
   transition: opacity .22s ease, transform .22s ease;
+  will-change: transform, opacity;
+  touch-action: pan-y;
+  -webkit-user-drag: none;
+  user-select: none;
+  z-index: 1;
 }
 .mr-lightbox-close{
   position:absolute;
@@ -205,27 +212,63 @@
   color:var(--mr-text);
   font-size:26px;
   cursor:pointer;
+  z-index: 3;
 }
 
 .mr-lightbox-img.is-switching{
   opacity:0;
   transform: translateX(var(--mr-lb-shift, 0px)) scale(.985);
 }
+
+.mr-lightbox-img.is-dragging{
+  transition:none;
+  cursor:grabbing;
+}
 .mr-lightbox-nav{
   position:absolute;
   top:50%;
   transform: translateY(-50%);
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  border:1px solid var(--mr-border);
-  background: rgba(255,255,255,.06);
-  color:var(--mr-text);
-  font-size:28px;
+  width:54px;
+  height:54px;
+  border-radius:16px;
+  border:1px solid rgba(246,196,0,.35);
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(8px);
+  color:var(--mr-yellow);
+  font-size:34px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.45);
   cursor:pointer;
+  z-index: 3;
 }
+.mr-lightbox-nav:hover{background: rgba(0,0,0,.58); border-color: rgba(246,196,0,.55);}
+.mr-lightbox-nav:active{transform: translateY(-50%) scale(.98);}
 .mr-lightbox-prev{left:18px;}
 .mr-lightbox-next{right:18px;}
+
+.mr-lightbox-counter{
+  position:absolute;
+  left:50%;
+  bottom:18px;
+  transform: translateX(-50%);
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(246,196,0,.28);
+  background: rgba(0,0,0,.55);
+  color:var(--mr-text);
+  font-weight:800;
+  font-size:13px;
+  letter-spacing:.2px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.45);
+  user-select:none;
+  z-index: 3;
+}
+
+@media (max-width: 520px){
+  .mr-lightbox-nav{width:48px; height:48px; font-size:32px; border-radius:15px;}
+  .mr-lightbox-prev{left:12px;}
+  .mr-lightbox-next{right:12px;}
+  .mr-lightbox-counter{bottom:12px; font-size:12px; padding:7px 11px;}
+}
 
 
 /* --- Nav CTA sizing (keep it elegant) --- */
