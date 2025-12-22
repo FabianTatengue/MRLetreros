@@ -214,6 +214,7 @@
 .mr-contact-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
 .mr-contact-lines{display:grid; gap:10px; margin-top:12px;}
 .mr-line{display:grid; grid-template-columns: 112px 1fr; align-items:baseline; gap:14px;}
+.mr-contact-lines .mr-line{padding:10px 12px; border:1px solid rgba(255,215,90,.22); border-radius:14px; background:rgba(255,215,90,.04);}
 .mr-line-k{color:var(--mr-muted); font-weight:800;}
 .mr-line-v{font-weight:800; justify-self:start; text-align:left;}
 
