@@ -200,6 +200,17 @@
   user-select: none;
   z-index: 1;
 }
+.mr-lightbox-video{
+  display:none;
+  max-width:min(92vw, 980px);
+  max-height:82vh;
+  border-radius:18px;
+  border:1px solid var(--mr-border);
+  box-shadow: var(--mr-shadow);
+  background:#000;
+  z-index: 1;
+}
+.mr-lightbox-video.is-active{display:block;}
 .mr-lightbox-close{
   position:absolute;
   top:18px;
