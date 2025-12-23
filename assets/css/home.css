@@ -253,6 +253,10 @@
 
 .mr-contact-lines .mr-link{border-bottom-color: transparent;}
 .mr-contact-lines .mr-link:hover{border-bottom-color: var(--mr-yellow);}
+
+/* FAQ preview on home */
+.mr-faq-panel .mr-faq-cta{margin-top:12px; display:flex; justify-content:flex-end;}
+.mr-faq-panel .mr-faq-cta .mr-btn{border-radius:999px;}
 .mr-social{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
 
 /* --- Contact: CTA buttons + socials (desktop + responsive) --- */
