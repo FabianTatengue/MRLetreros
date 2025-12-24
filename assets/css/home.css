@@ -1,5 +1,6 @@
 .mr-hero{
-  padding: 26px 0 10px;
+  /* Extra bottom air so the first section separator looks symmetrical */
+  padding: 26px 0 56px;
 }
 .mr-hero-grid{
   display:grid;
@@ -551,6 +552,8 @@
   .mr-process-media{min-height: 280px;}
 }
 @media (max-width: 520px){
+  /* Keep it spacious but not wasteful on small screens */
+  .mr-hero{ padding-bottom: 48px; }
   .mr-contact{grid-template-columns: 1fr;}
   .mr-line{grid-template-columns: 1fr; gap:6px;}
   .mr-line-v{font-weight:800;}

@@ -61,5 +61,32 @@
 }
 
 .mr-section{padding:56px 0;  scroll-margin-top: 96px;
+  position:relative;
+}
+
+/* --- Section separator (single, consistent bar) --- */
+.mr-section::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:calc(100% - 32px);
+  max-width:1120px;
+  height:3px;
+  border-radius:999px;
+  background: linear-gradient(90deg,
+    rgba(246,196,0,0),
+    rgba(246,196,0,.55) 18%,
+    rgba(246,196,0,.55) 82%,
+    rgba(246,196,0,0)
+  );
+  box-shadow: 0 0 18px rgba(246,196,0,.22), 0 0 60px rgba(246,196,0,.12);
+  opacity:1;
+  pointer-events:none;
+}
+
+@media (max-width: 520px){
+  .mr-section::before{ height:2px; }
 }
 .mr-section-head{margin-bottom:18px;}
