@@ -1,3 +1,35 @@
+/* === Motion system (global, reused across sections) === */
+:root{
+  --mr-ease: cubic-bezier(.2,.8,.2,1);
+  --mr-fx-dur: .18s;
+  --mr-fx-lift: -2px;
+  --mr-fx-glow: rgba(246,196,0,.18);
+  --mr-fx-border: rgba(246,196,0,.32);
+  --mr-reveal-dur: .45s;
+}
+
+.mr-reveal{
+  opacity:0;
+  transform: translateY(10px);
+  transition: opacity var(--mr-reveal-dur) var(--mr-ease),
+              transform var(--mr-reveal-dur) var(--mr-ease);
+  transition-delay: var(--mr-reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.mr-reveal.is-in{
+  opacity:1;
+  transform:none;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .mr-reveal{
+    opacity:1;
+    transform:none;
+    transition:none;
+    transition-delay:0ms;
+  }
+}
+
 .mr-header{
   position:sticky;
   top:0;
@@ -124,8 +156,15 @@
   border-radius:18px;
   border:1px solid var(--mr-border);
   background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+position:relative;
+overflow:hidden;
+transition: transform var(--mr-fx-dur) var(--mr-ease),
+            box-shadow var(--mr-fx-dur) var(--mr-ease),
+            border-color var(--mr-fx-dur) var(--mr-ease);
 }
-.mr-card-icon{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--mr-border);color:var(--mr-yellow);}
+.mr-card-icon{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--mr-border);color:var(--mr-yellow);
+  transition: transform var(--mr-fx-dur) var(--mr-ease), box-shadow var(--mr-fx-dur) var(--mr-ease), border-color var(--mr-fx-dur) var(--mr-ease);
+}
 .mr-card-icon svg{width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .mr-card-icon .mr-icon{width:22px;height:22px;display:block;}
 .mr-card-body{display:flex; flex-direction:column; gap:6px;}
@@ -136,6 +175,47 @@
   grid-template-columns: repeat(3, minmax(0,1fr));
 }
 
+
+/* === Card micro-interactions (desktop hover + mobile tap) === */
+.mr-card::before,
+.mr-faq::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(520px circle at 20% 0%, rgba(246,196,0,.10), transparent 55%);
+  opacity:.55;
+  pointer-events:none;
+}
+
+@media (hover:hover){
+  .mr-card:hover{
+    transform: translateY(var(--mr-fx-lift));
+    border-color: var(--mr-fx-border);
+    box-shadow: 0 18px 46px rgba(0,0,0,.40), 0 0 0 1px var(--mr-fx-glow);
+  }
+  .mr-card:hover .mr-card-icon{
+    border-color: rgba(246,196,0,.45);
+    box-shadow: 0 0 22px rgba(246,196,0,.14);
+    transform: scale(1.03);
+  }
+
+  .mr-faq:not([open]):hover{
+    transform: translateY(var(--mr-fx-lift));
+    border-color: var(--mr-fx-border);
+    box-shadow: 0 18px 46px rgba(0,0,0,.35), 0 0 0 1px var(--mr-fx-glow);
+  }
+}
+
+@media (hover:none){
+  .mr-card:active{
+    transform: translateY(1px) scale(.995);
+    border-color: rgba(246,196,0,.28);
+  }
+  .mr-faq:active{
+    transform: translateY(1px) scale(.998);
+    border-color: rgba(246,196,0,.28);
+  }
+}
 .mr-tag{
   display:inline-flex;
   padding:6px 10px;
@@ -150,7 +230,12 @@
 
 /* FAQ (reusable) */
 .mr-faq-grid{display:grid; gap:10px;}
-.mr-faq{border:1px solid var(--mr-border); background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border-radius:18px; overflow:hidden;}
+.mr-faq{border:1px solid var(--mr-border); background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border-radius:18px; overflow:hidden;
+position:relative;
+transition: transform var(--mr-fx-dur) var(--mr-ease),
+            box-shadow var(--mr-fx-dur) var(--mr-ease),
+            border-color var(--mr-fx-dur) var(--mr-ease);
+}
 .mr-faq[open]{box-shadow: 0 0 0 1px rgba(246,196,0,.22), 0 18px 40px rgba(0,0,0,.22);}
 .mr-faq-q{
   list-style:none;

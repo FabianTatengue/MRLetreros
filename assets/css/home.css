@@ -76,7 +76,35 @@
   background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
   padding:16px;
   overflow:hidden;
+  position:relative;
+  transform: translateZ(0);
+  box-shadow: 0 10px 26px rgba(0,0,0,.18);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, filter .18s ease;
 }
+
+.mr-work-card::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    radial-gradient(90% 120% at 20% -10%, rgba(246,196,0,.12), rgba(0,0,0,0) 55%),
+    radial-gradient(80% 80% at 80% 0%, rgba(255,255,255,.06), rgba(0,0,0,0) 55%);
+  opacity:0;
+  transition: opacity .18s ease;
+  pointer-events:none;
+}
+
+@media (hover:hover){
+  .mr-work-card:hover{
+    transform: translateY(-3px);
+    border-color: rgba(246,196,0,.18);
+    box-shadow: 0 20px 50px rgba(0,0,0,.42);
+  }
+  .mr-work-card:hover::before{ opacity:1; }
+}
+
+.mr-work-card:active{ transform: translateY(-1px) scale(.995); }
+.mr-work-card:focus-within{ border-color: rgba(246,196,0,.22); }
 
 /* Generic panel (same visual language as work cards) */
 .mr-panel{
@@ -87,6 +115,9 @@
 }
 .mr-panel-head{margin-bottom:6px;}
 .mr-panel-head .mr-h2{margin:0 0 6px;}
+
+/* FAQ (index): aire entre la última pregunta y el CTA */
+.mr-faq-cta{margin-top:16px;}
 
 /* Secciones: acento visual para títulos (línea amarilla en degradé) */
 .mr-h2-accent{position:relative; display:inline-block; padding-bottom:6px; font-weight:650; letter-spacing:-0.02em;}
@@ -317,6 +348,15 @@
   border:0;
   box-shadow:none;
   background: transparent;
+  transform: translateZ(0);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+@media (hover:hover){
+  .mr-process-collage:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 18px 44px rgba(0,0,0,.35);
+  }
 }
 
 .mr-process-collage:focus-visible{
@@ -342,7 +382,34 @@
   border:1px solid var(--mr-border);
   background: rgba(255,255,255,.02);
   margin:0;
+  position:relative;
+  overflow:hidden;
+  transform: translateZ(0);
+  box-shadow: 0 10px 26px rgba(0,0,0,.14);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, filter .18s ease;
 }
+
+.mr-step::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background: radial-gradient(90% 120% at 20% -10%, rgba(246,196,0,.10), rgba(0,0,0,0) 55%);
+  opacity:0;
+  transition: opacity .18s ease;
+  pointer-events:none;
+}
+
+@media (hover:hover){
+  .mr-step:hover{
+    transform: translateY(-2px);
+    border-color: rgba(246,196,0,.16);
+    box-shadow: 0 18px 44px rgba(0,0,0,.28);
+  }
+  .mr-step:hover::before{ opacity:1; }
+}
+
+.mr-step:active{ transform: translateY(-1px) scale(.997); }
+.mr-step:focus-within{ border-color: rgba(246,196,0,.20); }
 .mr-step-num{
   width:32px;
   height:32px;
@@ -367,7 +434,36 @@
   /* Keep cards visually aligned and push CTAs to the bottom for harmony */
   display:flex;
   flex-direction:column;
+  position:relative;
+  overflow:hidden;
+  transform: translateZ(0);
+  box-shadow: 0 10px 26px rgba(0,0,0,.14);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, filter .18s ease;
 }
+
+.mr-contact-card::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    radial-gradient(90% 120% at 20% -10%, rgba(246,196,0,.10), rgba(0,0,0,0) 55%),
+    radial-gradient(80% 80% at 80% 0%, rgba(255,255,255,.06), rgba(0,0,0,0) 55%);
+  opacity:0;
+  transition: opacity .18s ease;
+  pointer-events:none;
+}
+
+@media (hover:hover){
+  .mr-contact-card:hover{
+    transform: translateY(-3px);
+    border-color: rgba(246,196,0,.16);
+    box-shadow: 0 20px 50px rgba(0,0,0,.30);
+  }
+  .mr-contact-card:hover::before{ opacity:1; }
+}
+
+.mr-contact-card:active{ transform: translateY(-1px) scale(.995); }
+.mr-contact-card:focus-within{ border-color: rgba(246,196,0,.20); }
 .mr-contact-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
 .mr-contact-lines{display:grid; gap:10px; margin-top:12px;}
 .mr-line{display:grid; grid-template-columns: 112px 1fr; align-items:baseline; gap:14px;}
@@ -552,6 +648,13 @@
 }
 @media (prefers-reduced-motion: reduce){
   .mr-scrolltop{transition: none;}
+  .mr-work-card,
+  .mr-step,
+  .mr-contact-card,
+  .mr-process-collage{transition: none;}
+  .mr-work-card:active,
+  .mr-step:active,
+  .mr-contact-card:active{transform:none;}
 }
 
 

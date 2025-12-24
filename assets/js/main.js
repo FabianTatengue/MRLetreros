@@ -366,3 +366,53 @@
     });
   });
 })();
+
+/* --- Subtle reveal-on-scroll for key blocks (desktop + mobile) --- */
+(function(){
+  var mqReduce = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  function prefersReduced(){ return mqReduce ? mqReduce.matches : false; }
+
+  function addGroup(rootSelector, itemSelector, stagger, maxDelay){
+    var root = rootSelector ? document.querySelector(rootSelector) : document;
+    if(!root) return [];
+    var els = Array.prototype.slice.call(root.querySelectorAll(itemSelector));
+    els.forEach(function(el, i){
+      el.classList.add('mr-reveal');
+      var d = Math.min(i * (stagger || 70), (maxDelay == null ? 420 : maxDelay));
+      el.style.setProperty('--mr-reveal-delay', d + 'ms');
+    });
+    return els;
+  }
+
+  var items = [];
+  items = items.concat(addGroup('#servicios', '.mr-card', 70, 350));
+  items = items.concat(addGroup('#trabajos', '.mr-work-card', 80, 320));
+  items = items.concat(addGroup('#proceso', '.mr-step', 70, 280));
+  items = items.concat(addGroup('#preguntas', '.mr-faq', 60, 260));
+  items = items.concat(addGroup('#contacto', '.mr-contact-card', 70, 220));
+
+  // Also cover dedicated FAQ page
+  items = items.concat(addGroup(null, 'main .mr-faq-grid .mr-faq', 60, 260));
+
+  // Deduplicate (same nodes might be captured twice)
+  items = items.filter(function(el, idx, arr){ return arr.indexOf(el) === idx; });
+
+  if(!items.length) return;
+
+  if(prefersReduced() || !('IntersectionObserver' in window)){
+    items.forEach(function(el){ el.classList.add('is-in'); });
+    return;
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+
+  items.forEach(function(el){ io.observe(el); });
+})();
+
