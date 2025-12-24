@@ -249,19 +249,20 @@
 })();
 
 
-// --- Works thumbs: mobile carousel + arrows (final) ---
+// --- Works thumbs: carousel + arrows (desktop + mobile) ---
 (function(){
-  function isMobile(){ return window.matchMedia && window.matchMedia("(max-width: 720px)").matches; }
+  function isMobile(){
+    return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
+  }
 
-  function wrapThumbs(thumbs){
-    if (!thumbs) return null;
-    // add carousel class
-    thumbs.classList.add("mr-carousel");
-    // ensure wrapper exists for overlay arrows
-    const existingWrap = thumbs.closest(".mr-carousel-wrap");
-    if (existingWrap) return existingWrap;
+  function ensureWrap(thumbs){
+    if(!thumbs) return null;
 
-    const wrap = document.createElement("div");
+    // Ensure wrapper exists (for overlay arrows + fades)
+    var existingWrap = thumbs.closest(".mr-carousel-wrap");
+    if(existingWrap) return existingWrap;
+
+    var wrap = document.createElement("div");
     wrap.className = "mr-carousel-wrap";
     thumbs.parentNode.insertBefore(wrap, thumbs);
     wrap.appendChild(thumbs);
@@ -269,16 +270,16 @@
   }
 
   function ensureButtons(wrap){
-    if (!wrap) return;
-    if (wrap.querySelector(".mr-carousel-btn")) return;
+    if(!wrap) return;
+    if(wrap.querySelector(".mr-carousel-btn")) return;
 
-    const prev = document.createElement("button");
+    var prev = document.createElement("button");
     prev.type = "button";
     prev.className = "mr-carousel-btn mr-carousel-btn--prev";
     prev.setAttribute("aria-label", "Anterior");
     prev.innerHTML = "‹";
 
-    const next = document.createElement("button");
+    var next = document.createElement("button");
     next.type = "button";
     next.className = "mr-carousel-btn mr-carousel-btn--next";
     next.setAttribute("aria-label", "Siguiente");
@@ -289,56 +290,79 @@
   }
 
   function bind(wrap){
-    const thumbs = wrap.querySelector(".mr-thumbs");
-    const prev = wrap.querySelector(".mr-carousel-btn--prev");
-    const next = wrap.querySelector(".mr-carousel-btn--next");
-    if (!thumbs || !prev || !next) return;
+    if(!wrap || wrap.dataset.carouselBound === "1") return;
+    var thumbs = wrap.querySelector(".mr-thumbs");
+    var prev = wrap.querySelector(".mr-carousel-btn--prev");
+    var next = wrap.querySelector(".mr-carousel-btn--next");
+    if(!thumbs || !prev || !next) return;
 
-    const step = () => Math.max(thumbs.clientWidth * 0.85, 240);
-
-    function update(){
-      const max = thumbs.scrollWidth - thumbs.clientWidth - 1;
-      prev.disabled = thumbs.scrollLeft <= 1;
-      next.disabled = thumbs.scrollLeft >= max;
-      const hasOverflow = thumbs.scrollWidth > thumbs.clientWidth + 8;
-      const show = isMobile() && hasOverflow;
-      prev.style.display = next.style.display = show ? "" : "none";
-    }
-
-    if (wrap.dataset.carouselBound === "1") { update(); return; }
     wrap.dataset.carouselBound = "1";
 
-    prev.addEventListener("click", () => thumbs.scrollBy({ left: -step(), behavior: "smooth" }));
-    next.addEventListener("click", () => thumbs.scrollBy({ left: step(), behavior: "smooth" }));
+    function step(){
+      // Desktop: scroll by about a screen; Mobile: a bit less so it feels natural.
+      var base = thumbs.clientWidth * (isMobile() ? 0.85 : 0.9);
+      return Math.max(base, isMobile() ? 240 : 320);
+    }
 
-    thumbs.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    setTimeout(update, 0);
+    prev.addEventListener("click", function(){
+      thumbs.scrollBy({ left: -step(), behavior: "smooth" });
+    });
+    next.addEventListener("click", function(){
+      thumbs.scrollBy({ left: step(), behavior: "smooth" });
+    });
+
+    thumbs.addEventListener("scroll", function(){ update(wrap); }, { passive: true });
   }
 
-  function teardown(thumbs){
-    if (!thumbs) return;
-    thumbs.classList.remove("mr-carousel");
-    const wrap = thumbs.closest(".mr-carousel-wrap");
-    if (!wrap) return;
-    // move thumbs out and remove wrapper/buttons
-    wrap.parentNode.insertBefore(thumbs, wrap);
-    wrap.remove();
+  function update(wrap){
+    if(!wrap) return;
+    var thumbs = wrap.querySelector(".mr-thumbs");
+    var prev = wrap.querySelector(".mr-carousel-btn--prev");
+    var next = wrap.querySelector(".mr-carousel-btn--next");
+    if(!thumbs || !prev || !next) return;
+
+    var max = Math.max(0, thumbs.scrollWidth - thumbs.clientWidth);
+    var atStart = thumbs.scrollLeft <= 1;
+    var atEnd = thumbs.scrollLeft >= (max - 1);
+    var hasOverflow = thumbs.scrollWidth > thumbs.clientWidth + 6;
+
+    prev.disabled = atStart;
+    next.disabled = atEnd;
+
+    // Data attrs drive fades
+    wrap.dataset.atStart = atStart ? "1" : "0";
+    wrap.dataset.atEnd = atEnd ? "1" : "0";
+    wrap.dataset.hasOverflow = hasOverflow ? "1" : "0";
+
+    // Button visibility:
+    // - Mobile: always visible (even if disabled) so it feels consistent.
+    // - Desktop: only show when there's overflow.
+    var show = isMobile() ? true : hasOverflow;
+    prev.style.display = show ? "" : "none";
+    next.style.display = show ? "" : "none";
   }
 
   function init(){
-    document.querySelectorAll(".mr-work-card .mr-thumbs").forEach(thumbs => {
-      if (isMobile()){
-        const wrap = wrapThumbs(thumbs);
-        ensureButtons(wrap);
-        bind(wrap);
-      } else {
-        teardown(thumbs);
-      }
+    document.querySelectorAll(".mr-work-card .mr-thumbs").forEach(function(thumbs){
+      var wrap = ensureWrap(thumbs);
+      ensureButtons(wrap);
+      bind(wrap);
+      // Delay update until layout is stable (images/fonts)
+      setTimeout(function(){ update(wrap); }, 0);
+      setTimeout(function(){ update(wrap); }, 120);
     });
   }
 
   document.addEventListener("DOMContentLoaded", init);
-  window.addEventListener("resize", init);
+  window.addEventListener("resize", function(){
+    // Recalculate overflow + button states on resize
+    document.querySelectorAll(".mr-carousel-wrap").forEach(function(wrap){
+      update(wrap);
+    });
+  });
+  window.addEventListener("load", function(){
+    document.querySelectorAll(".mr-carousel-wrap").forEach(function(wrap){
+      update(wrap);
+    });
+  });
 })();
-
