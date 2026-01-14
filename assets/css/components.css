@@ -479,3 +479,4 @@ transition: transform var(--mr-fx-dur) var(--mr-ease),
 @media (max-width: 520px){
   .mr-thumb{width:96px; height:96px;}
 }
+
