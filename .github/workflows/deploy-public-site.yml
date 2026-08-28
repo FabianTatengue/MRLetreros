@@ -1,0 +1,104 @@
+name: Deploy public site
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - index.html
+      - clientes.html
+      - preguntas-frecuentes.html
+      - assets/**
+      - favicon.ico
+      - manifest.webmanifest
+      - robots.txt
+      - sitemap.xml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mrletreros-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy public files
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Validate deployment settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOY_HOST"
+          test -n "$DEPLOY_PORT"
+          test -n "$DEPLOY_USER"
+          test -n "$DEPLOY_PATH"
+          test -n "$DEPLOY_SSH_KEY"
+          test -n "$DEPLOY_KNOWN_HOSTS"
+          [[ "$DEPLOY_HOST" =~ ^[A-Za-z0-9.-]+$ ]]
+          [[ "$DEPLOY_PORT" =~ ^[0-9]{1,5}$ ]]
+          (( DEPLOY_PORT >= 1 && DEPLOY_PORT <= 65535 ))
+          [[ "$DEPLOY_USER" =~ ^[A-Za-z_][A-Za-z0-9_-]*$ ]]
+          [[ "$DEPLOY_PATH" =~ ^/[A-Za-z0-9._/-]+$ ]]
+          [[ "$DEPLOY_PATH" != "/" ]]
+          [[ "$DEPLOY_PATH" != *".."* ]]
+
+      - name: Prepare SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -m 700 -d "$RUNNER_TEMP/deploy-ssh"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$RUNNER_TEMP/deploy-ssh/key"
+          chmod 600 "$RUNNER_TEMP/deploy-ssh/key"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$RUNNER_TEMP/deploy-ssh/known_hosts"
+          chmod 600 "$RUNNER_TEMP/deploy-ssh/known_hosts"
+
+      - name: Stage public files
+        shell: bash
+        run: |
+          set -euo pipefail
+          release="$RUNNER_TEMP/mrletreros-release"
+          install -d "$release"
+          cp -a assets "$release/assets"
+          install -m 0644 index.html clientes.html preguntas-frecuentes.html "$release/"
+          install -m 0644 favicon.ico manifest.webmanifest robots.txt sitemap.xml "$release/"
+          grep -Fq 'G-ZGRDTRMPFX' "$release/index.html"
+
+      - name: Upload public files
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh_opts="-p $DEPLOY_PORT -i $RUNNER_TEMP/deploy-ssh/key -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$RUNNER_TEMP/deploy-ssh/known_hosts"
+          ssh $ssh_opts "$DEPLOY_USER@$DEPLOY_HOST" "test -d '$DEPLOY_PATH'"
+          rsync -rlptvz --checksum --itemize-changes \
+            -e "ssh $ssh_opts" \
+            "$RUNNER_TEMP/mrletreros-release/" \
+            "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+          ssh $ssh_opts "$DEPLOY_USER@$DEPLOY_HOST" \
+            "test -s '$DEPLOY_PATH/index.html' && grep -Fq 'G-ZGRDTRMPFX' '$DEPLOY_PATH/index.html'"
+
+      - name: Verify production
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS --retry 5 --retry-delay 3 \
+            "https://mrletreros.com.ar/?deploy=$GITHUB_SHA" \
+            | grep -Fq 'G-ZGRDTRMPFX'
+
+      - name: Remove temporary SSH files
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP/deploy-ssh"
